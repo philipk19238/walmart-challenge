@@ -1,0 +1,126 @@
+{% extends "template.html" %}
+{% block title %}Company{% endblock %}
+{% block content %}
+<style>
+    .card {
+        border: 2px solid grey;
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+        border-radius: 20px;
+    }
+
+    .card:hover {
+        box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.25);
+    }
+
+    #title-brand {
+        font-size: 45px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500;
+        color: white;
+    }
+
+    #issue-title {
+        font-family: 'Roboto', sans-serif;
+        font-weight: 600;
+        color: black;
+        font-size: 18px;
+    }
+
+    b {
+        color: black;
+        font-weight: 600;
+    }
+
+    .state {
+        font-family: 'Roboto', sans-serif;
+        color: white;
+        font-weight: 500;
+        font-size: 15px;
+    }
+
+    .state:hover {
+        color: white;
+    }
+</style>
+<nav class="navbar sticky-top d-flex align-items-center"
+    style="background-color: black; border-bottom: 2px solid whitesmoke">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <h1 id="title-brand">GitTracker</h1>
+        </a>
+        <div>
+            <button class="btn btn-lg mr-2" id="authbutton" onclick="logout();" style="background-color: whitesmoke">
+                <span id="button-span" class="ml-3 mr-3">Logout</span>
+            </button>
+        </div>
+    </div>
+</nav>
+<div class="row d-flex justify-content-center">
+    <div class="col-md-8 mt-3 mb-3">
+        <h1 style="font-family: 'Roboto'; font-weight: 500; font-size: 25px;">{{ intro_text }}</h1>
+        {% for issue in issue_data %}
+        <div class="card mt-3 mb-3">
+            <div class="card-body d-flex align-items-center">
+                <div class="container-fluid">
+                    <div class="mt-3">
+                        <h4 id="issue-title">{{ issue['title'] }}</h4>
+                    </div>
+                    <div class="mt-3 d-flex justify-content-between">
+                        {% if issue['state'].lower() == 'open'%}
+                        <button class="btn btn-success state">{{ issue['state'] }}</button>
+                        {% else %}
+                        <button class="btn btn-danger state">{{ issue['state'] }}</button>
+                        {% endif %}
+                        <button class="btn state" style="background-color: black;"
+                            onclick="get_issue({{ issue['number'] }})">View Details</button>
+                    </div>
+                    <div class="mt-3">
+                        <p style="font-family: 'Roboto', sans-serif; font-size: 13px; color: grey;">
+                            #{{ issue['number'] }} opened by {{ issue['user']['login'] }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="container d-flex justify-content-center mb-5 mt-3">
+    {% for i in range(total_pages) %}
+    <button id="{{ i+1 }}" onclick="change_page(this.id);" class="btn ml-1 mr-1 pagebutton"
+        style="background-color: black; color: white; font-family: 'Roboto';">Page
+        {{ i+1 }}</button>
+    {% endfor %}
+</div>
+
+{% endblock %}
+{% block script %}
+<script>
+    var curr_page = window.location['href'].split('/').slice(-1);
+    var buttons = document.getElementsByClassName("pagebutton");
+    for (let i = 0; i < buttons.length; i++) {
+        let curr = buttons[i];
+        if (curr.innerText.includes(curr_page)) {
+            curr.style.backgroundColor = 'whitesmoke';
+            curr.style.color = 'black';
+        }
+    }
+
+    function change_page(id) {
+        let curr_URL = window.location["href"].split('/');
+        let res_URL = `${curr_URL.slice(0, curr_URL.length - 1).join('/')}/${id}`;
+        window.location.replace(res_URL);
+    }
+
+    function get_issue(issue_id) {
+        let company_repo = window.location['href'].split('/').slice(-3, -1);
+        const company = company_repo[0]
+        const repository = company_repo[1]
+        let URL = `/issues/${company}/${repository}/${issue_id}`;
+        redirect(URL);
+    }
+
+</script>
+{% endblock %}

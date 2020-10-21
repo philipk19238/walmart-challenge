@@ -1,0 +1,106 @@
+{% extends "template.html" %}
+{% block title %}Issue{% endblock %}
+{% block content %}
+<style>
+    .card {
+        border: 2px solid grey;
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+        border-radius: 20px;
+    }
+
+    .card:hover {
+        box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.25);
+    }
+
+    #title-brand {
+        font-size: 45px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500;
+        color: white;
+    }
+
+    #issue-title {
+        font-family: 'Roboto', sans-serif;
+        font-weight: 400;
+        color: black;
+        font-size: 25px;
+    }
+
+    b {
+        color: gray;
+        font-weight: 600;
+    }
+
+    .state {
+        font-family: 'Roboto', sans-serif;
+        color: white;
+        font-weight: 500;
+        font-size: 15px;
+    }
+
+    .state:hover {
+        color: white;
+    }
+</style>
+<nav class="navbar sticky-top d-flex align-items-center"
+    style="background-color: black; border-bottom: 2px solid whitesmoke">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <h1 id="title-brand">GitTracker</h1>
+        </a>
+        <div>
+            <button class="btn btn-lg mr-2" id="authbutton" onclick="logout();" style="background-color: whitesmoke">
+                <span id="button-span" class="ml-3 mr-3">Logout</span>
+            </button>
+        </div>
+    </div>
+</nav>
+<div class="container mt-4" style="border-bottom: 1px solid lightgray">
+    <div class="d-flex justify-content-between">
+        <h1 id="issue-title">{{ issue_data['title'] }} <b style="font-weight:300">#{{ issue_data['number'] }}</b></h1>
+        {% if issue_data['state'].lower() == 'open'%}
+        <button class="btn btn-success state">{{ issue_data['state'] }}</button>
+        {% else %}
+        <button class="btn btn-danger state">{{ issue_data['state'] }}</button>
+        {% endif %}
+    </div>
+    <p><b>{{ issue_data['user']['login'] }}</b> opened this issue on <span
+            class="date">{{ issue_data['created_at'] }}</span></p>
+</div>
+
+<div class="container mt-4 mb-5">
+    <div class="card">
+        <div class="card-header" style="padding-top: 0px; padding-bottom: 0px;">
+            <p class="mt-3"><b style="color: black;">{{ issue_data['user']['login'] }}</b> commented on
+                <span class="date">{{ issue_data['created_at'] }}</span></p>
+        </div>
+        <div class="card-body">
+            <p style="font-family: 'Roboto'; font-weight: 300;">{{ issue_data['body'] }}</p>
+        </div>
+    </div>
+    {% for comment in comment_data %}
+    <div class="card mt-3">
+        <div class="card-header" style="padding-top: 0px; padding-bottom: 0px;">
+            <p class="mt-3"><b style="color: black;">{{ comment['user']['login'] }}</b> commented on
+                <span class='date'>{{ comment['created_at'] }}</span></p>
+        </div>
+        <div class="card-body">
+            <p style="font-family: 'Roboto'; font-weight: 300;">{{ comment['body'] }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+{% block script %}
+<script>
+    let dates = document.getElementsByClassName("date");
+    for (let i = 0; i < dates.length; i++) {
+        let curr = dates[i];
+        let inner_text = parse_time(curr.innerText);
+        curr.innerText = inner_text;
+    }
+</script>
+
+{% endblock %}

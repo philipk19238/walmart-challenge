@@ -1,0 +1,91 @@
+{% extends "template.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<style>
+    .card {
+        border: 2px solid grey;
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+        border-radius: 20px;
+    }
+
+    .card:hover {
+        box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.25);
+    }
+
+    #title-brand {
+        font-size: 45px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500;
+        color: black;
+        text-align: center; 
+    }
+
+    #issue-title {
+        font-family: 'Roboto', sans-serif;
+        font-weight: 600;
+        color: black;
+        font-size: 18px;
+    }
+
+    b {
+        color: black;
+        font-weight: 600;
+    }
+
+    #state {
+        font-family: 'Roboto', sans-serif;
+        color: white;
+        font-weight: 500;
+        font-size: 15px;
+    }
+</style>
+<nav class="navbar sticky-top d-flex align-items-center"
+    style="background-color: black; border-bottom: 2px solid whitesmoke">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <h1 id="title-brand" style="color:white;">GitTracker</h1>
+        </a>
+        <div>
+            <button class="btn btn-lg mr-2" id="authbutton" onclick="logout();" style="background-color: whitesmoke">
+                <span id="button-span" class="ml-3 mr-3">Logout</span>
+            </button>
+        </div>
+    </div>
+</nav>
+<div class="row d-flex justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card d-flex justify-content-center">
+            <div class="card-body m-3">
+                <div>
+                    <h1 id="title-brand">Search</h1>
+                </div>
+                <div class="form-group">
+                    <label for="company">Company Name</label>
+                    <input id="company" placeholder="Enter Company Name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="repository">Repository Name</label>
+                    <input id="repository" placeholder="Enter Repository Name" class="form-control">
+                </div>
+                <div>
+                    <button class="btn btn-primary btn-block"
+                        style="background-color: black; color: white; font-family: 'Montserrat'; font-size: 22px; border: none;"
+                        onclick="submit();">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block script %}
+<script>
+    function submit() {
+        const company = document.getElementById("company").value;
+        const repository = document.getElementById("repository").value;
+        const URL = `/company/${company}/${repository}/${1}`;
+        redirect(URL);
+    }
+</script>
+{% endblock %}
