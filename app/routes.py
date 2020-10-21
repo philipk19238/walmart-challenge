@@ -38,6 +38,7 @@ def company_issues(company_name, repo_name, page_num):
 
     if not status_code in [200, 201]:
         return num_issue_data 
+
     if not num_issue_data:
         resp = make_response(jsonify({'error':'No Issues'}), 400)
         return resp 
@@ -67,6 +68,9 @@ def company_issues(company_name, repo_name, page_num):
 @app.route('/issues/<company>/<repository>/<issue_id>', methods=['GET', 'POST'])
 def issues(company, repository, issue_id):
     api = Api()
+
+    if not api.logged_in():
+        return redirect(url_for('.login'))
 
     base = app.config['BASE_URL']
     endpoint = f"{base}/{company}/{repository}/issues/{issue_id}"
